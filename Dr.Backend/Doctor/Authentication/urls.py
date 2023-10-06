@@ -13,6 +13,7 @@ urlpatterns = [
     path('update/user/<id>', ProfileUpdateView.as_view()),
     path('delete/<id>', DeleteUser.as_view()),
     path('admin/search/',UserSearchView.as_view()),
+    path('doctor/all/',DoctorListView.as_view()),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

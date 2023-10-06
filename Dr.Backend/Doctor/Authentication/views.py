@@ -14,8 +14,9 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 import jwt
 from rest_framework import generics
+from django.contrib.auth import get_user_model
 
-
+User = get_user_model()
 
 class RegisterUser(APIView):
     def post(self, request):
@@ -126,3 +127,7 @@ class UserSearchView(APIView):
         users = UserAccount.objects.filter(Q(name__icontains = keyword) | Q(phonenumber__icontains = keyword) , is_staff = False)
         serialized = UserSerializer(users, many=True)
         return Response(serialized.data)
+    
+class DoctorListView(generics.ListAPIView):
+    queryset = User.objects.all() 
+    serializer_class = UserSerializer
