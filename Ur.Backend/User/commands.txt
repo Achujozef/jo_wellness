@@ -1,0 +1,2 @@
+docker build --tag python-django-user .
+docker run --publish 8001:8001 python-django-user

@@ -10,25 +10,27 @@ import requests
 
 class GetFeeds(APIView):
     doctor_get_post_url=doctor_get_post_url
+    print("Feeds call Reached The User View")
     def get(self, request):
-        print("Reached The User View")
+        
         try:
-            userResponse = requests.get(self.doctor_get_post_url)
+            print("jsldkvkjlsdcjkvjl;jk")
+            response = requests.get(doctor_get_post_url)
 
-            if userResponse.status_code == 200:
-                posts = userResponse.json()
+            if response.status_code == 200:
+                posts = response.json()
               
                 
                 return Response({'posts': posts}, status=status.HTTP_200_OK)
             else:
-                return Response({'error': 'Failed to retrieve posts'}, status=userResponse.status_code)
-        except request.exceptions.RequestExpection as e:
-            return JsonResponse({'error': 'Request failed: ' + str(e)}, status=500)
+                return Response({'error': 'Failed to retrieve posts'}, status=response.status_code)
+        except Exception as e:
+            return Response({'error': 'Request failed: ' + str(e)}, status=500)
 
 
 class GetDoctors(APIView):
     doctor_get_all_url=doctor_get_all_url
-    print("Call reached View")
+    print("Doctor List Call reached View 1 2 3 ")
     def get(self, request):
         try:
             response = requests.get(doctor_get_all_url)
@@ -40,3 +42,9 @@ class GetDoctors(APIView):
                 return Response({'error': 'External service request failed'}, status=response.status_code)
         except Exception as e:
             return Response({'error':str(e)},status=500)    
+
+# class LikePost(APIView):
+#     def post(self, request):
+#         post_id = request.data.get('PostId')
+#         try:
+#             post=

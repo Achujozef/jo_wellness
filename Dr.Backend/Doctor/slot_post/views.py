@@ -12,10 +12,15 @@ from django.http import JsonResponse
 from Authentication.models import UserAccount
 from Authentication.serializer import UserSerializer
 from rest_framework import viewsets, status
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class CreatePostView(APIView):
-    def patch(self, request, id):
-        user = get_object_or_404(UserAccount, id=id)
+    def post(self, request):
+        print('method called')
+        user = get_object_or_404(UserAccount, id=request.data.get('user_id'))
+        
         image = request.FILES.get("image")
         description = request.data.get("description")
         print(image,description)
@@ -64,32 +69,32 @@ class DoctorSlotView(APIView):
         return Response(serializer.data)
     
 
-class testView(APIView):
-    def get(self,request):
-        print("Rabit On view")
-        publish()
-        return Response(status=status.HTTP_201_CREATED)
+# class testView(APIView):
+#     def get(self,request):
+#         print("Rabit On view")
+#         publish()
+#         return Response(status=status.HTTP_201_CREATED)
     
-class test(APIView):
-    def get(self, request, *args, **kwargs):
-        posts = Post.objects.all().order_by('-id')
-        post_serializer=PostSerializer(posts,many=True)
+# class test(APIView):
+#     def get(self, request, *args, **kwargs):
+#         posts = Post.objects.all().order_by('-id')
+#         post_serializer=PostSerializer(posts,many=True)
 
-        doctor = UserAccount.objects.all()
-        doctor_serializer = UserSerializer(doctor,many=True)
+#         doctor = UserAccount.objects.all()
+#         doctor_serializer = UserSerializer(doctor,many=True)
 
-        combined_data =[]
-        for post in post_serializer.data:
-            doctor_id = post['doctor']
-            doctor_data = next((doctor for doctor in doctor_serializer.data if doctor['id'] == doctor_id),None)
-            if doctor_data:
-                post['doctor']=doctor_data
-                combined_data.append(post)
-                print(post)
+#         combined_data =[]
+#         for post in post_serializer.data:
+#             doctor_id = post['doctor']
+#             doctor_data = next((doctor for doctor in doctor_serializer.data if doctor['id'] == doctor_id),None)
+#             if doctor_data:
+#                 post['doctor']=doctor_data
+#                 combined_data.append(post)
+#                 print(post)
 
-        data={'post':combined_data}
-        print(data)
-        return Response(data, status=status.HTTP_200_OK)
+#         data={'post':combined_data}
+#         print(data)
+#         return Response(data, status=status.HTTP_200_OK)
     
 
 class PostListView (generics.ListAPIView):
@@ -109,6 +114,8 @@ class PostViewset(viewsets.ViewSet):
         serializer = PostSerializer(posts,many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     def create(self,request):
+        print("Reached Create View")
+        print(request.data)
         serializer=PostSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -126,4 +133,4 @@ class PostViewset(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         post =Post.objects.get(pk=pk)
         post.delete()
-        return Response("Post Deleted")
+        return Response("Post Deleted",status=status.HTTP_200_OK)
